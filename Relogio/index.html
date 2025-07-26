@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relógio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #212121;
+            font-family: Arial, sans-serif;
+            transition: background 0.3s ease;
+        }
+
+        body.light-mode {
+            background: #f0f0f0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .relogio {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: #2f363e;
+            border: 2px solid #334155;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        body.light-mode .relogio {
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .relogio label {
+            position: absolute;
+            inset: 20px;
+            text-align: center;
+            transform: rotate(calc(var(--i) * 30deg));
+        }
+
+        .relogio label span {
+            display: inline-block;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #00bcd4;
+            transform: rotate(calc(var(--i) * -30deg));
+            transition: color 0.3s ease;
+        }
+
+        body.light-mode .relogio label span {
+            color: #334155;
+        }
+
+        .indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .indicator::before {
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #00bcd4;
+            z-index: 100;
+            transform: translate(-50%, -50%);
+            transition: background 0.3s ease;
+        }
+
+        body.light-mode .indicator::before {
+            background: #334155;
+        }
+
+        .hand {
+            position: absolute;
+            transform-origin: bottom;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 6px;
+        }
+
+        .hand.hour {
+            width: 4px;
+            height: 80px;
+            background: #ff6b6b;
+            z-index: 12;
+        }
+
+        .hand.minute {
+            width: 3px;
+            height: 100px;
+            background: #4ecdc4;
+            z-index: 11;
+        }
+
+        .hand.second {
+            width: 1px;
+            height: 120px;
+            background: #ff9ff3;
+            z-index: 10;
+        }
+
+        .mode-switch {
+            padding: 12px 24px;
+            background: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+
+        .mode-switch:hover {
+            background: #0097a7;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 188, 212, 0.3);
+        }
+
+        body.light-mode .mode-switch {
+            background: #334155;
+        }
+
+        body.light-mode .mode-switch:hover {
+            background: #475569;
+            box-shadow: 0 5px 15px rgba(51, 65, 85, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="relogio">
+            <label style="--i: 1"><span>1</span></label>
+            <label style="--i: 2"><span>2</span></label>
+            <label style="--i: 3"><span>3</span></label>
+            <label style="--i: 4"><span>4</span></label>
+            <label style="--i: 5"><span>5</span></label>
+            <label style="--i: 6"><span>6</span></label>
+            <label style="--i: 7"><span>7</span></label>
+            <label style="--i: 8"><span>8</span></label>
+            <label style="--i: 9"><span>9</span></label>
+            <label style="--i: 10"><span>10</span></label>
+            <label style="--i: 11"><span>11</span></label>
+            <label style="--i: 12"><span>12</span></label>
+            <div class="indicator">
+                <span class="hand hour"></span>
+                <span class="hand minute"></span>
+                <span class="hand second"></span>
+            </div>
+        </div>
+        <div class="mode-switch" onclick="toggleMode()">🌓 Alternar Modo</div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const hours = now.getHours() % 12;
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const hourDeg = (hours * 30) + (minutes * 0.5);
+            const minuteDeg = minutes * 6;
+            const secondDeg = seconds * 6;
+
+            document.querySelector('.hour').style.transform = `translateX(-50%) rotate(${hourDeg}deg)`;
+            document.querySelector('.minute').style.transform = `translateX(-50%) rotate(${minuteDeg}deg)`;
+            document.querySelector('.second').style.transform = `translateX(-50%) rotate(${secondDeg}deg)`;
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle('light-mode');
+            const modeSwitch = document.querySelector('.mode-switch');
+            if (document.body.classList.contains('light-mode')) {
+                modeSwitch.textContent = '🌙 Modo Escuro';
+            } else {
+                modeSwitch.textContent = '☀️ Modo Claro';
+            }
+        }
+
+        // Atualizar relógio a cada segundo
+        setInterval(updateClock, 1000);
+        updateClock(); // Chamada inicial
+    </script>
+</body>
+</html>
